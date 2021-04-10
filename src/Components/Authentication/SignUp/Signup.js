@@ -30,9 +30,7 @@ export const Signup = () => {
            }catch (e) {
                console.log(e)
            }
-          
     } 
-
 
     return (
         <MDBContainer className="m-auto">

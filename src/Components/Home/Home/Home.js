@@ -9,6 +9,7 @@ import { Search } from '../Search/Search';
 import {MDBCol} from 'mdbreact';
 import { Cart } from '../Cart/Cart';
 import { addToDatabaseCart, getDatabaseCart } from '../../databaseManager';
+import Pagination from '../Pagination';
 
 
 export const Home = () => {
@@ -16,11 +17,18 @@ const accessToken =localStorage.getItem("accessToken")
 const [loading,setLoading] = useState(true);
 const [allfood,setAllFood]=useState([])
 const [cart,setCart]=useState([]);
+const [currentPage, setCurrentPage] = useState(1);
+  const [postsPerPage] = useState(2);
+ // Get current posts
+ const indexOfLastPost = currentPage * postsPerPage;
+ const indexOfFirstPost = indexOfLastPost - postsPerPage;
+ const currentPosts = allfood.slice(indexOfFirstPost, indexOfLastPost);
 
-
+ // Change page
+ const paginate = pageNumber => setCurrentPage(pageNumber);
     const handleFood=async e=>{
         try{
-            const response=await axios.get(proxy.endpoint+'food',{
+            const response=await axios.get(proxy.endpoint+`food`,{
                 headers: {
                   authorization:accessToken
                 }
@@ -28,6 +36,7 @@ const [cart,setCart]=useState([]);
             if(response){
                 if(response){
                     setAllFood(response.data.foods)
+                    console.log("ok")
                   setLoading(false)
                 } 
             }
@@ -35,7 +44,7 @@ const [cart,setCart]=useState([]);
                console.log(e)
            }
     }
-    
+
     useEffect(()=>{
         handleFood()
         const saveCart=getDatabaseCart();
@@ -89,7 +98,7 @@ const [cart,setCart]=useState([]);
        <MDBCol md="10">
            <MDBRow>
         
-             {allfood.map(food=><FoodShow food={food} key={food.id} handleAddProduct={handelClick}/>)}
+             {currentPosts.map(food=><FoodShow food={food} key={food.id} handleAddProduct={handelClick}/>)}
         
            </MDBRow>
            </MDBCol>
@@ -99,6 +108,11 @@ const [cart,setCart]=useState([]);
             </div>
            </MDBCol>
            </MDBRow>
+           <Pagination
+        postsPerPage={postsPerPage}
+        totalPosts={allfood.length}
+        paginate={paginate}
+      />
        </MDBContainer>
     )
 }

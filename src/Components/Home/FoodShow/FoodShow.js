@@ -16,7 +16,11 @@ export const FoodShow = ({food,handleAddProduct}) => {
     <li class="list-group-item"> Fat : {fat}</li>
     <li class="list-group-item">Details : {details}</li>
     <button 
-        className="main-btn" onClick={()=>handleAddProduct(food)}
+        className="main-btn" onClick={()=>{
+            handleAddProduct(food)
+            alert(`Your Meal Item added ${name}`)
+        } }
+        
         >
              add cart</button>
         
